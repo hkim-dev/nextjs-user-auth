@@ -1,0 +1,65 @@
+default:
+  image: node:21
+  before_script:
+    - npm i
+
+stages:
+  - test
+  - build
+  - deploy
+
+cache:
+  paths:
+    - node_modules/
+
+test:
+  stage: test
+  script:
+    - npm run lint
+    - npm test
+  allow_failure: true
+
+build:
+  stage: build
+  script:
+    - npm run build
+  artifacts:
+    paths:
+      - .next
+
+# placeholders for deploy stages
+deploy:production:
+  stage: deploy
+  script:
+    - echo "Deploying to production"
+  environment:
+    name: production
+    url: production_url
+  only:
+    - master
+
+deploy:development:
+  stage: deploy
+  script:
+    - echo "Deploying to development"
+  environment:
+    name: development
+    url: development_url
+  only:
+    - develop
+
+deploy:staging:
+  stage: deploy
+  script:
+    - echo "Deploying to staging"
+  environment:
+    name: staging
+  only:
+    - staging
+
+deploy:test:
+  stage: deploy
+  script:
+    - echo "Deploying to test"
+  environment:
+    name: test
